@@ -1,0 +1,262 @@
+Simple:
+SELECT * FROM Customers;
+SELECT * FROM Products;
+SELECT * FROM Suppliers;
+SELECT * FROM Orders;
+SELECT * FROM Employees;
+SELECT * FROM Stores;
+SELECT * FROM Shipments;
+SELECT * FROM Payments;
+SELECT * FROM Inventory;
+SELECT * FROM Discounts;
+SELECT COUNT(*) AS TotalCustomers FROM Customers;
+SELECT COUNT(*) AS TotalProducts FROM Products;
+SELECT * FROM Customers WHERE City = 'Chennai';
+SELECT * FROM Products WHERE Price > 500;
+SELECT * FROM Orders WHERE OrderDate = '2025-03-07';
+SELECT MAX(Price) AS MaxPrice FROM Products;
+SELECT MIN(StockQuantity) AS MinStock FROM Products;
+SELECT * FROM Employees WHERE Position = 'Manager';
+SELECT * FROM Shipments WHERE Carrier = 'FedEx';
+SELECT * FROM Discounts WHERE StartDate <= '2025-03-08' AND EndDate >= '2025-03-08';
+SELECT * FROM Stores WHERE Location = 'Mumbai';
+SELECT * FROM Payments WHERE PaymentMethod = 'Credit Card';
+SELECT AVG(Price) AS AveragePrice FROM Products;
+SELECT * FROM Customers WHERE LastName = 'Smith';
+SELECT * FROM Employees WHERE Salary > 50000;
+SELECT * FROM Products WHERE Category = 'Electronics';
+SELECT * FROM Suppliers WHERE Email IS NOT NULL;
+SELECT * FROM Orders WHERE Status = 'Shipped';
+SELECT * FROM Inventory WHERE StockLevel < 5;
+SELECT * FROM Shipments WHERE DeliveryDate > '2025-03-01';
+
+Medium:
+SELECT CustomerID, SUM(TotalAmount) AS TotalSales FROM Orders GROUP BY CustomerID;
+SELECT Category, COUNT(*) AS NumberOfProducts FROM Products GROUP BY Category;
+SELECT State, COUNT(*) AS NumberOfCustomers FROM Customers GROUP BY State;
+SELECT ProductID, AVG(StockLevel) AS AvgStock FROM Inventory GROUP BY ProductID;
+SELECT PaymentMethod, SUM(Amount) AS TotalPayments FROM Payments GROUP BY PaymentMethod;
+SELECT StoreID, MAX(StockLevel) AS MaxStock FROM Inventory GROUP BY StoreID;
+SELECT EmployeeID, COUNT(*) AS NumberOfOrders FROM Orders WHERE OrderDate >= '2025-01-01' GROUP BY EmployeeID;
+SELECT Orders.OrderID, Customers.FirstName, Customers.LastName FROM Orders INNER JOIN Customers ON Orders.CustomerID = Customers.CustomerID;
+SELECT Products.ProductName, Inventory.StockLevel FROM Products INNER JOIN Inventory ON Products.ProductID = Inventory.ProductID;
+SELECT Orders.OrderID, Payments.Amount, Shipments.Status FROM Orders INNER JOIN Payments ON Orders.OrderID = Payments.OrderID INNER JOIN Shipments ON Orders.OrderID = Shipments.OrderID;
+SELECT Employees.FirstName, Employees.LastName, COUNT(*) AS TotalOrders FROM Employees INNER JOIN Orders ON Employees.EmployeeID = Orders.EmployeeID GROUP BY Employees.EmployeeID;
+SELECT Products.ProductName, SUM(OrderDetails.Quantity) AS TotalQuantitySold FROM Products INNER JOIN OrderDetails ON Products.ProductID = OrderDetails.ProductID GROUP BY Products.ProductID;
+SELECT Customers.City, AVG(Orders.TotalAmount) AS AvgOrderValue FROM Customers INNER JOIN Orders ON Customers.CustomerID = Orders.CustomerID GROUP BY Customers.City;
+SELECT Products.Category, SUM(OrderDetails.Quantity * OrderDetails.UnitPrice) AS TotalRevenue FROM Products INNER JOIN OrderDetails ON Products.ProductID = OrderDetails.ProductID GROUP BY Products.Category;
+SELECT Products.ProductName, Discounts.DiscountPercentage FROM Products INNER JOIN Discounts ON Products.ProductID = Discounts.ProductID WHERE Discounts.StartDate <= '2025-03-08' AND Discounts.EndDate >= '2025-03-08';
+SELECT Shipments.Carrier, COUNT(*) AS ShipmentsMade FROM Shipments GROUP BY Shipments.Carrier;
+SELECT State, COUNT(*) AS TotalStores FROM Stores GROUP BY State;
+SELECT Employees.Position, AVG(Salary) AS AvgSalary FROM Employees GROUP BY Employees.Position;
+SELECT Products.Category, COUNT(*) AS ProductCount FROM Products GROUP BY Products.Category HAVING ProductCount > 10;
+SELECT Orders.OrderID, COUNT(OrderDetails.ProductID) AS ProductCount FROM Orders INNER JOIN OrderDetails ON Orders.OrderID = OrderDetails.OrderID GROUP BY Orders.OrderID;
+SELECT Shipments.ShipmentID, Shipments.Status, Payments.PaymentMethod FROM Shipments INNER JOIN Payments ON Shipments.OrderID = Payments.OrderID;
+SELECT Customers.FirstName, Customers.LastName, SUM(Payments.Amount) AS TotalAmountPaid FROM Customers INNER JOIN Orders ON Customers.CustomerID = Orders.CustomerID INNER JOIN Payments ON Orders.OrderID = Payments.OrderID GROUP BY Customers.CustomerID;
+SELECT Customers.City, COUNT(*) AS TotalOrders FROM Customers INNER JOIN Orders ON Customers.CustomerID = Orders.CustomerID GROUP BY Customers.City;
+SELECT Products.ProductName, COUNT(*) AS DiscountCount FROM Products LEFT JOIN Discounts ON Products.ProductID = Discounts.ProductID GROUP BY Products.ProductID;
+SELECT Shipments.OrderID, MAX(ShipmentDate) AS LatestShipmentDate FROM Shipments GROUP BY Shipments.OrderID;
+SELECT Payments.PaymentMethod, COUNT(*) AS PaymentCount FROM Payments GROUP BY Payments.PaymentMethod;
+SELECT Customers.City, SUM(Orders.TotalAmount) AS TotalCitySales FROM Customers INNER JOIN Orders ON Customers.CustomerID = Orders.CustomerID GROUP BY Customers.City;
+SELECT Discounts.DiscountPercentage, COUNT(*) AS DiscountCount FROM Discounts GROUP BY Discounts.DiscountPercentage;
+SELECT Employees.Position, MIN(Salary) AS MinSalary FROM Employees GROUP BY Employees.Position;
+SELECT Shipments.Carrier, AVG(DeliveryDate - ShipmentDate) AS AvgDeliveryTime FROM Shipments GROUP BY Shipments.Carrier;
+SELECT Products.Category, AVG(Products.Price) AS AvgCategoryPrice FROM Products GROUP BY Products.Category;
+SELECT Customers.State, COUNT(*) AS CustomersInState FROM Customers GROUP BY Customers.State;
+SELECT Orders.Status, COUNT(*) AS OrdersByStatus FROM Orders GROUP BY Orders.Status;
+SELECT Payments.PaymentDate, SUM(Payments.Amount) AS PaymentsByDate FROM Payments GROUP BY Payments.PaymentDate;
+
+Complex:
+SELECT Customers.FirstName, Customers.LastName, SUM(OrderDetails.Quantity * OrderDetails.UnitPrice) AS TotalSpent
+FROM Customers
+INNER JOIN Orders ON Customers.CustomerID = Orders.CustomerID
+INNER JOIN OrderDetails ON Orders.OrderID = OrderDetails.OrderID
+GROUP BY Customers.CustomerID
+ORDER BY TotalSpent DESC;
+
+SELECT Products.Category, AVG(OrderDetails.UnitPrice) AS AvgPrice, SUM(OrderDetails.Quantity) AS TotalQuantitySold
+FROM Products
+INNER JOIN OrderDetails ON Products.ProductID = OrderDetails.ProductID
+GROUP BY Products.Category
+HAVING SUM(OrderDetails.Quantity) > 100;
+
+SELECT Employees.FirstName, Employees.LastName, COUNT(DISTINCT Orders.OrderID) AS TotalOrdersHandled
+FROM Employees
+INNER JOIN Orders ON Employees.EmployeeID = Orders.EmployeeID
+GROUP BY Employees.EmployeeID
+ORDER BY TotalOrdersHandled DESC;
+
+SELECT Shipments.Carrier, COUNT(*) AS ShipmentCount, AVG(JULIANDAY(DeliveryDate) - JULIANDAY(ShipmentDate)) AS AvgDeliveryTime
+FROM Shipments
+GROUP BY Shipments.Carrier
+HAVING ShipmentCount > 10;
+
+SELECT Customers.CustomerID, Customers.FirstName, Customers.LastName, MAX(Orders.TotalAmount) AS MaxOrderValue
+FROM Customers
+INNER JOIN Orders ON Customers.CustomerID = Orders.CustomerID
+GROUP BY Customers.CustomerID
+ORDER BY MaxOrderValue DESC;
+
+SELECT StoreID, ProductID, StockLevel, RANK() OVER (PARTITION BY StoreID ORDER BY StockLevel DESC) AS StockRank
+FROM Inventory;
+
+SELECT ProductID, SUM(StockLevel) AS TotalStock, SUM(CASE WHEN StockLevel < 5 THEN StockLevel ELSE 0 END) AS LowStock
+FROM Inventory
+GROUP BY ProductID;
+
+SELECT Products.ProductName, SUM(OrderDetails.Quantity) AS TotalQuantitySold, RANK() OVER (ORDER BY SUM(OrderDetails.Quantity) DESC) AS SalesRank
+FROM Products
+INNER JOIN OrderDetails ON Products.ProductID = OrderDetails.ProductID
+GROUP BY Products.ProductID;
+
+WITH CustomerSales AS (
+    SELECT Customers.CustomerID, SUM(Orders.TotalAmount) AS TotalSpent
+    FROM Customers
+    INNER JOIN Orders ON Customers.CustomerID = Orders.CustomerID
+    GROUP BY Customers.CustomerID
+)
+SELECT * FROM CustomerSales WHERE TotalSpent > 5000;
+
+SELECT Orders.OrderID, SUM(OrderDetails.Quantity) AS TotalItems,
+       SUM(OrderDetails.Quantity * OrderDetails.UnitPrice) AS TotalCost
+FROM Orders
+INNER JOIN OrderDetails ON Orders.OrderID = OrderDetails.OrderID
+GROUP BY Orders.OrderID
+HAVING TotalCost > 1000;
+
+SELECT ProductID, COUNT(*) AS DiscountCount
+FROM Discounts
+WHERE StartDate <= '2025-03-08' AND EndDate >= '2025-03-08'
+GROUP BY ProductID;
+
+SELECT Shipments.OrderID, Orders.CustomerID, MAX(Shipments.ShipmentDate) AS LastShipmentDate
+FROM Shipments
+INNER JOIN Orders ON Shipments.OrderID = Orders.OrderID
+GROUP BY Shipments.OrderID;
+
+SELECT Orders.OrderID, COUNT(OrderDetails.ProductID) AS ProductCount,
+       SUM(OrderDetails.Quantity * OrderDetails.UnitPrice) AS TotalValue
+FROM Orders
+INNER JOIN OrderDetails ON Orders.OrderID = OrderDetails.OrderID
+GROUP BY Orders.OrderID;
+
+SELECT Customers.FirstName, Customers.LastName,
+       (SELECT COUNT(*) FROM Orders WHERE Orders.CustomerID = Customers.CustomerID) AS TotalOrders
+FROM Customers
+WHERE EXISTS (
+    SELECT 1 FROM Orders WHERE Orders.CustomerID = Customers.CustomerID AND TotalAmount > 1000
+);
+
+SELECT Employees.FirstName, Employees.LastName,
+       ROW_NUMBER() OVER (PARTITION BY Employees.Position ORDER BY Employees.Salary DESC) AS PositionRank
+FROM Employees;
+
+SELECT Customers.City, COUNT(*) AS CustomerCount,
+       SUM(CASE WHEN Orders.Status = 'Completed' THEN 1 ELSE 0 END) AS CompletedOrders
+FROM Customers
+LEFT JOIN Orders ON Customers.CustomerID = Orders.CustomerID
+GROUP BY Customers.City;
+
+SELECT Orders.OrderID, Customers.FirstName, Customers.LastName,
+       RANK() OVER (PARTITION BY Customers.CustomerID ORDER BY Orders.TotalAmount DESC) AS OrderRank
+FROM Orders
+INNER JOIN Customers ON Orders.CustomerID = Customers.CustomerID;
+
+SELECT Suppliers.SupplierName, COUNT(DISTINCT Products.ProductID) AS ProductCount
+FROM Suppliers
+LEFT JOIN Products ON Suppliers.SupplierID = Products.SupplierID
+GROUP BY Suppliers.SupplierID;
+
+SELECT Shipments.Carrier, Orders.OrderID, ROW_NUMBER() OVER (PARTITION BY Shipments.Carrier ORDER BY Shipments.ShipmentDate DESC) AS ShipmentRank
+FROM Shipments
+INNER JOIN Orders ON Shipments.OrderID = Orders.OrderID;
+
+WITH EmployeeOrderCount AS (
+    SELECT Employees.EmployeeID, COUNT(*) AS TotalOrders
+    FROM Employees
+    INNER JOIN Orders ON Employees.EmployeeID = Orders.EmployeeID
+    GROUP BY Employees.EmployeeID
+)
+SELECT Employees.FirstName, Employees.LastName, EmployeeOrderCount.TotalOrders
+FROM Employees
+INNER JOIN EmployeeOrderCount ON Employees.EmployeeID = EmployeeOrderCount.EmployeeID
+WHERE EmployeeOrderCount.TotalOrders > 10;
+
+SELECT Inventory.ProductID, Inventory.StoreID, AVG(Inventory.StockLevel) AS AvgStockLevel,
+       SUM(CASE WHEN Inventory.StockLevel < 5 THEN 1 ELSE 0 END) AS LowStockCount
+FROM Inventory
+GROUP BY Inventory.ProductID, Inventory.StoreID;
+
+SELECT ProductID,
+       LAG(StockLevel) OVER (PARTITION BY StoreID ORDER BY LastUpdated) AS PreviousStock,
+       StockLevel
+FROM Inventory;
+
+SELECT Payments.OrderID, Payments.PaymentMethod,
+       COUNT(*) OVER (PARTITION BY Payments.PaymentMethod) AS PaymentMethodCount
+FROM Payments;
+
+SELECT Customers.CustomerID, Customers.FirstName, Customers.LastName,
+       SUM(Orders.TotalAmount) AS TotalSpent,
+       NTILE(4) OVER (ORDER BY SUM(Orders.TotalAmount) DESC) AS SpendingQuartile
+FROM Customers
+INNER JOIN Orders ON Customers.CustomerID = Orders.CustomerID
+GROUP BY Customers.CustomerID;
+
+SELECT Orders.OrderID, Shipments.Status,
+       LEAD(Shipments.Status) OVER (PARTITION BY Orders.OrderID ORDER BY Shipments.ShipmentDate) AS NextStatus
+FROM Shipments
+INNER JOIN Orders ON Shipments.OrderID = Orders.OrderID;
+
+SELECT Customers.CustomerID, Customers.FirstName, Customers.LastName,
+       SUM(CASE WHEN Shipments.Status = 'Delivered' THEN 1 ELSE 0 END) AS DeliveredOrders
+FROM Customers
+INNER JOIN Orders ON Customers.CustomerID = Orders.CustomerID
+INNER JOIN Shipments ON Orders.OrderID = Shipments.OrderID
+GROUP BY Customers.CustomerID;
+
+SELECT Shipments.Carrier,
+       COUNT(*) AS TotalShipments,
+       MAX(DeliveryDate - ShipmentDate) AS MaxDeliveryTime,
+       MIN(DeliveryDate - ShipmentDate) AS MinDeliveryTime
+FROM Shipments
+GROUP BY Shipments.Carrier;
+
+SELECT Shipments.Carrier,
+       COUNT(CASE WHEN Shipments.Status = 'Delivered' THEN 1 END) AS DeliveredShipments,
+       COUNT(CASE WHEN Shipments.Status = 'Pending' THEN 1 END) AS PendingShipments
+FROM Shipments
+GROUP BY Shipments.Carrier;
+
+WITH RevenueByCategory AS (
+    SELECT Products.Category, SUM(OrderDetails.Quantity * OrderDetails.UnitPrice) AS TotalRevenue
+    FROM Products
+    INNER JOIN OrderDetails ON Products.ProductID = OrderDetails.ProductID
+    GROUP BY Products.Category
+)
+SELECT * FROM RevenueByCategory WHERE TotalRevenue > 100000;
+
+SELECT Discounts.ProductID, MAX(Discounts.DiscountPercentage) AS MaxDiscountPercentage
+FROM Discounts
+GROUP BY Discounts.ProductID;
+
+SELECT Payments.PaymentDate,
+       SUM(Payments.Amount) AS TotalPayments,
+       SUM(Payments.Amount) - LAG(SUM(Payments.Amount)) OVER (ORDER BY Payments.PaymentDate) AS PaymentChange
+FROM Payments
+GROUP BY Payments.PaymentDate;
+
+SELECT Customers.CustomerID, Customers.FirstName, Customers.LastName,
+       SUM(Orders.TotalAmount) AS TotalSpent,
+       COUNT(DISTINCT Shipments.ShipmentID) AS TotalShipments,
+       RANK() OVER (ORDER BY SUM(Orders.TotalAmount) DESC) AS SpendingRank
+FROM Customers
+INNER JOIN Orders ON Customers.CustomerID = Orders.CustomerID
+INNER JOIN Shipments ON Orders.OrderID = Shipments.OrderID
+GROUP BY Customers.CustomerID;
+
+SELECT OrderDetails.ProductID, SUM(OrderDetails.Quantity) AS TotalQuantity,
+       RANK() OVER (PARTITION BY Products.Category ORDER BY SUM(OrderDetails.Quantity) DESC) AS CategoryRank
+FROM OrderDetails
+INNER JOIN Products ON OrderDetails.ProductID = Products.ProductID
+GROUP BY OrderDetails.ProductID, Products.Category;
